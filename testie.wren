@@ -3,7 +3,7 @@ import "random" for Random
 var RND = Random.new()
 
 var SAD_EMOTION = ["😡","👺","👿","🙀","💩","😰","😤","😬"]
-class Runner {
+class Reporter {
     construct new(name) {
         _name = name
         _fail = _skip = _success = 0
@@ -39,6 +39,7 @@ class Skipper {
         _that.skip(a,b)
     }
 }
+
 class Testie {
     construct new(name, fn) {
         _shoulds = []
@@ -46,16 +47,12 @@ class Testie {
         _name = name
         fn.call(this, Skipper.new(this))
     }
-    should(name, fn) {
-        _shoulds.add([name, fn])
-    }
-    skip(name, fn) {
-        _skips.add([name,fn])
-    }
-    runner=(v){ _runner = v }
-    runner { _runner || Runner }
+    should(name, fn) { _shoulds.add([name, fn]) }
+    skip(name, fn) { _skips.add([name,fn]) }
+    reporter=(v){ _reporter = v }
+    reporter { _reporter || Reporter }
     run() {
-        var r = runner.new(_name)
+        var r = reporter.new(_name)
         r.start()
 
         for (test in _shoulds) {
