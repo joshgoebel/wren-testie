@@ -1,44 +1,7 @@
 import "../wren-assert/Assert" for Assert
 import "random" for Random
 var RND = Random.new()
-
-var SAD_EMOTION = ["😡","👺","👿","🙀","💩","😰","😤","😬"]
-class Reporter {
-    construct new(name) {
-        _name = name
-        _fail = _skip = _success = 0
-    }
-    start() { System.print(_name + "\n") }
-    skip(name) {
-        _skip = _skip + 1
-        System.print("  🔹 [skip] %(name)")
-    }
-    fail(name, error) {
-        _fail = _fail + 1   
-        System.print("  ❌ %(name) \n     %(error)\n")
-    }
-    success(name) {
-        _success = _success + 1
-        System.print("  ✅ %(name)")
-    }
-    sadEmotion { SAD_EMOTION[RND.int(SAD_EMOTION.count)] }
-    done() {
-        var all = _success + _fail + _skip
-        var overall = "💯"
-        if (_fail > 0) overall = "❌ %(sadEmotion)"
-        System.print("")
-        System.print("  %(overall) ✓ %(_success) successes, ✕ %(_fail) failures, ☐ %(_skip) skipped\n")
-    }
-}
-
-class Skipper {
-    construct new(that) {
-        _that = that
-    }
-    should(a,b) {
-        _that.skip(a,b)
-    }
-}
+var SAD_EMOJI = ["😡","👺","👿","🙀","💩","😰","😤","😬"]
 
 class Testie {
     construct new(name, fn) {
@@ -73,3 +36,39 @@ class Testie {
         r.done()
     }
 }
+
+class Reporter {
+    construct new(name) {
+        _name = name
+        _fail = _skip = _success = 0
+    }
+    start() { System.print(_name + "\n") }
+    skip(name) {
+        _skip = _skip + 1
+        System.print("  🔹 [skip] %(name)")
+    }
+    fail(name, error) {
+        _fail = _fail + 1   
+        System.print("  ❌ %(name) \n     %(error)\n")
+    }
+    success(name) {
+        _success = _success + 1
+        System.print("  ✅ %(name)")
+    }
+    sadEmotion { SAD_EMOJI[RND.int(SAD_EMOJI.count)] }
+    done() {
+        var overall = "💯"
+        if (_fail > 0) overall = "❌ %(sadEmotion)"
+        System.print("\n  %(overall) ✓ %(_success) successes, ✕ %(_fail) failures, ☐ %(_skip) skipped\n")
+    }
+}
+
+class Skipper {
+    construct new(that) {
+        _that = that
+    }
+    should(a,b) {
+        _that.skip(a,b)
+    }
+}
+
