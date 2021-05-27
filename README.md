@@ -19,13 +19,52 @@ Simple and beautiful testing framework for [Wren](https://wren.io).
 - less than 100 lines of Wren if you want to learn how it works
 
 
+### Tests your way
+
+#### Shoulda
+
+```js
+Testie.test("Calculator") { |it|
+  it.context("basic math") {
+    it.should("add") {  }
+    it.should("subtract") {  }
+  }
+}
+```
+
+#### Specs
+
+```js
+Testie.test("Calculator") { |it|
+  it.describe("basic math") {
+    it.must("add") {  }
+    it.must("subtract") {  }
+    it.skip("multiply") {  }
+  }
+}
+```
+
+#### Simple
+
+```js
+Testie.test("Calculator") { |it, skip|
+  it.describe("basic math") {
+    it.test("add") {  }
+    it.test("subtract") {  }
+    skip.test("multiply") {  }
+  }
+}
+```
+
+I'm open to more styles if they can be accomplished with simple aliases.  Open an issue.
+
 ### Example
 
 ```js
 import "./testie/testie" for Testie, Assert
 
 // defining custom reporters is super simple
-class DotReporter 
+class DotReporter
     // ..
     skip(name) { System.write("S") }
     fail(name, error) { System.write("X") }
@@ -55,6 +94,6 @@ suite.run()
 
 ### Contributions
 
-Licensed MIT and open to contributions!  
+Licensed MIT and open to contributions!
 
 Please open an issue to discuss or find me on [Wren Discord](https://discord.gg/VTzuWmBavH).
