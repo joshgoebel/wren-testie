@@ -68,10 +68,14 @@ class StackTraceReport {
       "%(Color.RESET + Color.BLACK + Color.BOLD) line %( f.line ))")
     System.write(Color.RESET)
 
-    _trace.frames[1..1].each { |f|
-      System.write(Color.BLACK + Color.BOLD  )
-      System.print("at %( f.methodMirror.signature ) (%( f.methodMirror.moduleMirror.name ) line %( f.line ))")
-      System.write(Color.RESET)
+    // simple `X metaclass does not implement 'y()'.` errors do not more than a single
+    // trace line
+    if (_trace.frames.count > 1) {
+      _trace.frames[1..1].each { |f|
+        System.write(Color.BLACK + Color.BOLD  )
+        System.print("at %( f.methodMirror.signature ) (%( f.methodMirror.moduleMirror.name ) line %( f.line ))")
+        System.write(Color.RESET)
+      }
     }
     System.print()
   }

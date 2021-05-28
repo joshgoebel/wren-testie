@@ -48,6 +48,9 @@ class Expect {
     equalLists_(v) {
         return DeepEqual.list(_value,v)
     }
+    toNotAbort() {
+        // no need to do anything
+    }
     abortsWith(err) {
         var f = Fiber.new { _value.call() }
         var result = f.try()
@@ -71,6 +74,10 @@ class Expect {
         } else {
             return "%(v)"
         }
+    }
+    toBeDefined() {
+        if (_value != null) return
+        raise("Expected %(_value) to be defined (not null).")
     }
     toEqual(v) {
         if (_value is List && v is List) {
