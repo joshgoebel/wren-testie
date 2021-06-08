@@ -30,6 +30,7 @@ class Expect {
     construct new(value) { _value = value }
     raise(message) { ExpectError.throw(message) }
     static that(v) { Expect.new(v) }
+    static value(v) { Expect.new(v) }
     toBe(v) { toEqual(v) }
     equalMaps_(v) {
         if (_value.count != v.count) return false
