@@ -14,33 +14,26 @@ class DeepEqual {
     static list(a,b) {
         if (a.count != b.count) return false
         for (i in 0...a.count) {
-            var c = a[i]
-            var d = b[i]
-            if (c is List && d is List) {
-                if (!DeepEqual.list(c,d)) return false
-            } else if (c is Map && d is Map) {
-                if (!DeepEqual.map(c,d)) return false
-            } else if (c != d) {
-                return false
-            }
+            if (!equalElements(a[i],b[i])) return false
         }
         return true
     }
     static map(a,b) {
         if (a.count != b.count) return false
-        for (entry in a) {
-            if (!b.containsKey(entry.key)) return false
-            var c = entry.value
-            var d = b[entry.key]
-            if (c is List && d is List) {
-                if (!DeepEqual.list(c,d)) return false
-            } else if (c is Map && d is Map) {
-                if (!DeepEqual.map(c,d)) return false
-            } else if (c != d) {
-                return false
-            }
+        for (key in a.keys) {
+            if (!b.containsKey(key)) return false
+            if (!equalElements(a[key],b[key])) return false
         }
         return true
+    }
+    static equalElements(c,d) {
+        if (c is List && d is List) {
+            return list(c,d)
+        } else if (c is Map && d is Map) {
+            return map(c,d)
+        } else {
+            return c == d
+        }
     }
 }
 
