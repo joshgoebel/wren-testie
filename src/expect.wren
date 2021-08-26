@@ -11,16 +11,27 @@ class ExpectError {
 }
 
 class DeepEqual {
-    static list(a,b) {
+    static isEqual(a,b) {
+        if (a is List && b is List) {
+            return listEqual_(a,b)
+        } else if (a is Map && b is Map) {
+            return mapEqual_(a,b)
+        } else {
+            return a == b
+        }
+    }
+    static listEqual_(a,b) {
         if (a.count != b.count) return false
         for (i in 0...a.count) {
-            var c = a[i]
-            var d = b[i]
-            if (c is List && d is List) {
-                if (!DeepEqual.list(c,d)) return false
-            } else if (c != d) {
-                return false
-            }
+            if (!isEqual(a[i],b[i])) return false
+        }
+        return true
+    }
+    static mapEqual_(a,b) {
+        if (a.count != b.count) return false
+        for (key in a.keys) {
+            if (!b.containsKey(key)) return false
+            if (!isEqual(a[key],b[key])) return false
         }
         return true
     }
@@ -32,22 +43,12 @@ class Expect {
     static that(v) { Expect.new(v) }
     static value(v) { Expect.new(v) }
     toBe(v) { toEqual(v) }
-    equalMaps_(v) {
-        if (_value.count != v.count) return false
-        for (k in _value.keys) {
-            if (_value[k] != v[k]) return false
-        }
-        return true
-    }
     toIncludeSameItemsAs(v) {
         if (_value.count != v.count) return false
         for (item in _value) {
             if (!v.contains(item)) return false
         }
         return true
-    }
-    equalLists_(v) {
-        return DeepEqual.list(_value,v)
     }
     toNotAbort() {
         // no need to do anything
@@ -82,13 +83,13 @@ class Expect {
     }
     toEqual(v) {
         if (_value is List && v is List) {
-            if (!equalLists_(v)) {
+            if (!DeepEqual.isEqual(_value,v)) {
                 raise("Expected list %(printValue(_value)) to be %(printValue(v))")
             }
             return
         }
         if (v is Map && _value is Map) {
-            if (!equalMaps_(v)) {
+            if (!DeepEqual.isEqual(_value,v)) {
                 raise("Expected %(_value) to be %(v)")
             }
             return
