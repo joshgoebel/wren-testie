@@ -98,4 +98,18 @@ Testie.test("Expect tests") {|do, skip|
       Expect.value(a).toNotEqual(b)
     }.abortsWith(err)
   }
+
+  do.test("exceptions") {
+    Expect.that {
+      Expect.value(1).toNotAbort()
+    }.toNotAbort()
+
+    Expect.that {
+      null.count
+    }.abortsWith("Null does not implement 'count'.")
+
+    Expect.that {
+      Expect.that {42}.abortsWith("foo")
+    }.abortsWith("Expected error 'foo' but got 42")
+  }
 }
