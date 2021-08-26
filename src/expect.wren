@@ -82,9 +82,15 @@ class Expect {
         raise("Expected %(_value) to be defined (not null).")
     }
     toEqual(v) {
-        if ((_value is List && v is List) || (_value is Map && v is Map)) {
+        if (_value is List && v is List) {
             if (!DeepEqual.isEqual(_value,v)) {
-                raise("Expected %(_value.type) %(_value) to be %(v)")
+                raise("Expected list %(printValue(_value)) to be %(printValue(v))")
+            }
+            return
+        }
+        if (v is Map && _value is Map) {
+            if (!DeepEqual.isEqual(_value,v)) {
+                raise("Expected %(_value) to be %(v)")
             }
             return
         }
