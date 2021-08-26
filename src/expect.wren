@@ -13,21 +13,21 @@ class ExpectError {
 class DeepEqual {
     static isEqual(a,b) {
         if (a is List && b is List) {
-            return list(a,b)
+            return listEqual_(a,b)
         } else if (a is Map && b is Map) {
-            return map(a,b)
+            return mapEqual_(a,b)
         } else {
             return a == b
         }
     }
-    static list(a,b) {
+    static listEqual_(a,b) {
         if (a.count != b.count) return false
         for (i in 0...a.count) {
             if (!isEqual(a[i],b[i])) return false
         }
         return true
     }
-    static map(a,b) {
+    static mapEqual_(a,b) {
         if (a.count != b.count) return false
         for (key in a.keys) {
             if (!b.containsKey(key)) return false
