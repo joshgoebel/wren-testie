@@ -46,31 +46,32 @@ class Expect {
     toBe(v) { toEqual(v) }
     toNotBe(v) { toNotEqual(v) }
 
-    toEqual(v) { toEqual_(v, true) }
-    toNotEqual(v) { toEqual_(v, false) }
+    toEqual(v) { toEqual_(v, false) }
+    toNotEqual(v) { toEqual_(v, true) }
 
-    toEqual_(v, isPositive) {
-        var not = isPositive ? "" : "not "
-        var method = isPositive ? "toEqual" : "toNotEqual"
+    toEqual_(v, isNegated) {
+        var not = isNegated ? "not " : ""
+        var method = isNegated ? "toNotEqual" : "toEqual"
         if (_value is List && v is List) {
             assert(
-                expr(DeepEqual.isEqual(_value,v), isPositive),
+                expr(DeepEqual.isEqual(_value,v), isNegated),
                 "Expected list %(printValue_(_value)) %(not)to be %(printValue_(v))"
             )
             return
         }
         if (v is Map && _value is Map) {
             assert(
-                expr(DeepEqual.isEqual(_value,v), isPositive),
+                expr(DeepEqual.isEqual(_value,v), isNegated),
                 "Expected %(_value) %(not)to be %(v)"
             )
             return
         }
-        assert(expr(_value == v, isPositive), buildErrorMessage_(v, _value, method))
+        assert(expr(_value == v, isNegated), buildErrorMessage_(v, _value, method))
     }
-    expr(expression, isPositive) {
-        return ( expression &&  isPositive) ||
-               (!expression && !isPositive)
+    expr(expression, isNegated) {
+        // a boolean XOR
+        return ( expression && !isNegated) ||
+               (!expression &&  isNegated)
     }
 
     // Numeric less-than, greater-than tests
@@ -104,7 +105,10 @@ class Expect {
     }
 
     // Error tests
-    abortsWith(err) {
+    #!deprecated
+    abortsWith(err) { toAbortWith(err) }
+
+    toAbortWith(err) {
         var f = Fiber.new { _value.call() }
         var result = f.try()
         assert(result.toString == err, "Expected error '%(err)' but got %(result)")
@@ -115,8 +119,8 @@ class Expect {
 
     // utility methods
     raise(message) { ExpectError.throw(message) }
-    assert(expression, errMsg) {
-        if (!expression) raise(errMsg)
+    assert(expression, errorMessage) {
+        if (!expression) raise(errorMessage)
     }
     printValue_(v) {
         if (v is String) {

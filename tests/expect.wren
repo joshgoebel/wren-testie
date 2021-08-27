@@ -110,6 +110,6 @@ Testie.test("Expect tests") {|do, skip|
 
     Expect.that {
       Expect.that {42}.abortsWith("foo")
-    }.abortsWith("Expected error 'foo' but got 42")
+    }.toAbortWith("Expected error 'foo' but got 42")
   }
 }
