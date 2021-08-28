@@ -5,7 +5,7 @@
 # <img src="https://wren.io/wren.svg" valign="middle" width="100"> wren-testie
 
 ![MIT licensed](https://badgen.net/badge/license/MIT/cyan?scale=1.5)
-![version 0.2](https://badgen.net/badge/version/0.2.0/green?scale=1.5)
+![version 0.3](https://badgen.net/badge/version/0.3.0/green?scale=1.5)
 ![wren 0.4](https://badgen.net/badge/wren/0.4/blue?scale=1.5)
 
 Simple and beautiful testing framework for [Wren](https://wren.io).
