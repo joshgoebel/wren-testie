@@ -101,8 +101,7 @@ Testie.test("Expect tests") {|do, skip|
 
   do.test("exceptions") {
     Expect.that {
-      var b = 3
-      return b
+      Expect.that { 1 + 2 + 3 }.toNotAbort()
     }.toNotAbort()
 
     Expect.that {
@@ -110,7 +109,7 @@ Testie.test("Expect tests") {|do, skip|
     }.abortsWith("Null does not implement 'count'.")
 
     Expect.that {
-      Expect.that {42}.abortsWith("foo")
-    }.toAbortWith("Expected error 'foo' but got 42")
+      Expect.that { 42 }.abortsWith("foo")
+    }.toAbortWith("Expected error 'foo' but got null")
   }
 }
