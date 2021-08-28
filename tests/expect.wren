@@ -101,7 +101,8 @@ Testie.test("Expect tests") {|do, skip|
 
   do.test("exceptions") {
     Expect.that {
-      Expect.value(1).toNotAbort()
+      var b = 3
+      return b
     }.toNotAbort()
 
     Expect.that {

@@ -106,15 +106,22 @@ class Expect {
 
     // Error tests
     #!deprecated
-    abortsWith(err) { toAbortWith(err) }
+    abortsWith(errorMessage) { toAbortWith(errorMessage) }
 
-    toAbortWith(err) {
+    toAbortWith(expectedMessage) {
         var f = Fiber.new { _value.call() }
         var result = f.try()
-        assert(result.toString == err, "Expected error '%(err)' but got %(result)")
+        var errorMessage = f.error
+        // an ExpectError has the string error in it's `error` accessor
+        if (f.error && f.error is ExpectError) {
+            errorMessage = f.error.error
+        }
+        assert(errorMessage == expectedMessage, "Expected error '%(expectedMessage)' but got %(result)")
     }
     toNotAbort() {
-        // no need to do anything
+        var f = Fiber.new { _value.call() }
+        var result = f.try()
+        assert(f.error == null, "Expected no error but got: %(f.error)")
     }
 
     // utility methods
