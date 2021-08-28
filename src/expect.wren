@@ -110,7 +110,7 @@ class Expect {
 
     toAbortWith(expectedMessage) {
         var f = Fiber.new { _value.call() }
-        var result = f.try()
+        f.try()
         var errorMessage = f.error
         // an ExpectError has the string error in it's `error` accessor
         if (f.error && f.error is ExpectError) {
@@ -124,7 +124,7 @@ class Expect {
     }
     toNotAbort() {
         var f = Fiber.new { _value.call() }
-        var result = f.try()
+        f.try()
         assert(f.error == null, "Expected no error but got: %(f.error)")
     }
 
