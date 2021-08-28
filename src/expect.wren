@@ -116,7 +116,7 @@ class Expect {
         if (f.error && f.error is ExpectError) {
             errorMessage = f.error.error
         }
-        assert(errorMessage == expectedMessage, "Expected error '%(expectedMessage)' but got %(result)")
+        assert(errorMessage == expectedMessage, "Expected error '%(expectedMessage)' but got %(errorMessage)")
     }
     toNotAbort() {
         var f = Fiber.new { _value.call() }
