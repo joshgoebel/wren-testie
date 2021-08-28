@@ -116,6 +116,10 @@ class Expect {
         if (f.error && f.error is ExpectError) {
             errorMessage = f.error.error
         }
+        if (errorMessage == null) {
+            raise("Expected error '%(expectedMessage)' but no error occurred")
+            return
+        }
         assert(errorMessage == expectedMessage, "Expected error '%(expectedMessage)' but got %(errorMessage)")
     }
     toNotAbort() {

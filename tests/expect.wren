@@ -104,12 +104,21 @@ Testie.test("Expect tests") {|do, skip|
       Expect.that { 1 + 2 + 3 }.toNotAbort()
     }.toNotAbort()
 
+    // expected abort happens
     Expect.that {
       null.count
     }.abortsWith("Null does not implement 'count'.")
 
+    // expected abort, but no error occurs
     Expect.that {
       Expect.that { 42 }.abortsWith("foo")
-    }.toAbortWith("Expected error 'foo' but got null")
+    }.toAbortWith("Expected error 'foo' but no error occurred")
+
+    // expected booger, but entirely different error occurs
+    Expect.that {
+      Expect.that {
+        null.count
+      }.abortsWith("booger")
+    }.toAbortWith("Expected error 'booger' but got Null does not implement 'count'.")
   }
 }
