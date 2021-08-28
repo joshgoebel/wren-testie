@@ -39,69 +39,105 @@ class DeepEqual {
 
 class Expect {
     construct new(value) { _value = value }
-    raise(message) { ExpectError.throw(message) }
     static that(v) { Expect.new(v) }
     static value(v) { Expect.new(v) }
+
+    // Equality tests
     toBe(v) { toEqual(v) }
-    toIncludeSameItemsAs(v) {
-        if (_value.count != v.count) return false
-        for (item in _value) {
-            if (!v.contains(item)) return false
+    toNotBe(v) { toNotEqual(v) }
+
+    toEqual(v) { toEqual_(v, false) }
+    toNotEqual(v) { toEqual_(v, true) }
+
+    toEqual_(v, isNegated) {
+        var not = isNegated ? "not " : ""
+        var method = isNegated ? "toNotEqual" : "toEqual"
+        if (_value is List && v is List) {
+            assert(
+                expr(DeepEqual.isEqual(_value,v), isNegated),
+                "Expected list %(printValue_(_value)) %(not)to be %(printValue_(v))"
+            )
+            return
         }
-        return true
+        if (v is Map && _value is Map) {
+            assert(
+                expr(DeepEqual.isEqual(_value,v), isNegated),
+                "Expected %(_value) %(not)to be %(v)"
+            )
+            return
+        }
+        assert(expr(_value == v, isNegated), buildErrorMessage_(v, _value, method))
+    }
+    expr(expression, isNegated) {
+        // a boolean XOR
+        return ( expression && !isNegated) ||
+               (!expression &&  isNegated)
+    }
+
+    // Numeric less-than, greater-than tests
+    toBeGreaterThan(v) {
+        assert(_value > v, "Expected %(_value) to be greater than %(v)")
+    }
+    toBeGreaterThanOrEqual(v) {
+        assert(_value >= v, "Expected %(_value) to be greater than or equal to %(v)")
+    }
+    toBeLessThan(v) {
+        assert(_value < v, "Expected %(_value) to be less than %(v)")
+    }
+    toBeLessThanOrEqual(v) {
+        assert(_value <= v, "Expected %(_value) to be less than or equal to %(v)")
+    }
+
+    // List element tests
+    toIncludeSameItemsAs(v) {
+        assert(_value.count == v.count, "Expected %(_value) to have same count as %(v)")
+        for (item in _value) {
+            assert(v.contains(item), "Expected %(_value) to have same items as %(v) ('%(item)' is missing)")
+        }
+    }
+
+    // Nullity
+    toBeDefined() {
+        assert(_value != null, "Expected %(_value) to be defined (not null)")
+    }
+    toBeNull() {
+        assert(_value == null, "Expected %(_value) to be null")
+    }
+
+    // Error tests
+    #!deprecated
+    abortsWith(err) { toAbortWith(err) }
+
+    toAbortWith(err) {
+        var f = Fiber.new { _value.call() }
+        var result = f.try()
+        assert(result.toString == err, "Expected error '%(err)' but got %(result)")
     }
     toNotAbort() {
         // no need to do anything
     }
-    abortsWith(err) {
-        var f = Fiber.new { _value.call() }
-        var result = f.try()
-        if (result!=err) {
-            raise("Expected error '%(err)' but got none")
-        }
+
+    // utility methods
+    raise(message) { ExpectError.throw(message) }
+    assert(expression, errorMessage) {
+        if (!expression) raise(errorMessage)
     }
-    toBeGreaterThanOrEqual(v) {
-        if (_value >= v) return
-        raise("Expected %(_value) to be greater than or equal to %(v)")
-    }
-    toBeLessThanOrEqual(v) {
-        if (_value <= v) return
-        raise("Expected %(_value) to be less than or equal to %(v)")
-    }
-    printValue(v) {
+    printValue_(v) {
         if (v is String) {
             return "`%(v)`"
         } else if (v is List) {
-            return "[" + v.map {|x| printValue(x) }.join(", ") +  "]"
+            return "[" + v.map {|x| printValue_(x) }.join(", ") +  "]"
         } else {
             return "%(v)"
         }
     }
-    toBeDefined() {
-        if (_value != null) return
-        raise("Expected %(_value) to be defined (not null).")
-    }
-    toEqual(v) {
-        if (_value is List && v is List) {
-            if (!DeepEqual.isEqual(_value,v)) {
-                raise("Expected list %(printValue(_value)) to be %(printValue(v))")
-            }
-            return
-        }
-        if (v is Map && _value is Map) {
-            if (!DeepEqual.isEqual(_value,v)) {
-                raise("Expected %(_value) to be %(v)")
-            }
-            return
-        }
-        if (_value == v) return
-
+    buildErrorMessage_(expected, received, methodName) {
         var fade = "%(Color.BLACK + Color.BOLD)"
-        var err="%(fade)expect(%(Color.RESET + Color.RED)received%(fade)).toEqual(%(Color.RESET + Color.GREEN)expected%(fade)) // deep equality\n\n"
+        var err="%(fade)expect(%(Color.RESET + Color.RED)received%(fade)).%(methodName)(%(Color.RESET + Color.GREEN)expected%(fade)) // deep equality\n\n"
         err = err + "%(Color.WHITE + Color.BOLD)Expected:%(Color.RESET) "
-        err = err + Color.GREEN + printValue(v) + Color.RESET + "\n"
+        err = err + Color.GREEN + printValue_(expected) + Color.RESET + "\n"
         err = err + "%(Color.WHITE + Color.BOLD)Received:%(Color.RESET) "
-        err = err + Color.RED + printValue(_value) + Color.RESET
-        raise("%(err)")
+        err = err + Color.RED + printValue_(received) + Color.RESET
+        return err
     }
 }
