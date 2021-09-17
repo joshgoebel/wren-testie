@@ -25,13 +25,27 @@ class Testie {
         _skips = []
         _name = name
         _fails = 0
+        _abortAfterFailures = true
         _afterEach = _beforeEach = Fn.new {}
         fn.call(this, Skipper.new(this))
     }
     static test(name, fn) { Testie.new(name,fn).run() }
+    static test(name, options, fn) {
+        var testie = Testie.new(name,fn)
+        for (option in options) {
+            if (option.key == "reporter") {
+                testie.reporter = option.value
+            }
+            if (option.key == "abortAfterFailures") {
+                testie.abortAfterFailures_ = option.value
+            }
+        }
+        testie.run()
+    }
     expect(v) { Expect.that(v) }
     afterEach(fn) { _afterEach = fn }
     beforeEach(fn) { _beforeEach = fn }
+    abortAfterFailures_=(v){ _abortAfterFailures = v }
     reporter=(v){ _reporter = v }
     reporter { _reporter || CuteReporter }
 
@@ -90,11 +104,11 @@ class Testie {
             Stdout.flush()
             Fiber.new(test.fn).call()
         }
-        if (_fails > 0) Fiber.abort("Failing tests.")
+        if (_fails > 0 && _abortAfterFailures) {
+            Fiber.abort("Failing tests.")
+        }
     }
 }
-
-
 
 
 class Skipper {
@@ -104,4 +118,3 @@ class Skipper {
     test(a,b) { _that.skip(a,b) }
     should(a,b) { _that.skip(a,b) }
 }
-
