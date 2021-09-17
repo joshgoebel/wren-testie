@@ -64,13 +64,13 @@ I'm open to more styles if they can be accomplished with simple aliases.  Open a
 import "./testie/testie" for Testie, Assert
 
 // defining custom reporters is super simple
-class DotReporter
+class DotReporter {
     // ..
     skip(name) { System.write("S") }
     fail(name, error) { System.write("X") }
     success(name) { System.write(".") }
     // ..
-end
+}
 
 var suite = Testie.new("Calculator") { |it, skip|
 
@@ -91,6 +91,55 @@ suite.reporter = DotReporter
 suite.run()
 ```
 
+#### Using the options map on the static `test` method:
+
+```js
+import "./testie" for Testie
+import "./src/tap_reporter" for TapReporter
+
+Testie.test("Features Under Test", 
+    {
+        "reporter": TapReporter,
+        "abortAfterFailures": false,
+    }
+) { |do, skip|
+
+    do.test("Test Feature 1") {
+        Expect.value(5.pow(3)).toEqual(125);
+    }
+
+    do.test("Test Feature 2") {
+        Expect.value(1 == 2).toBe(true)
+    }
+
+    skip.test("Do not test me") {
+        Expect.that { 
+            return "not yet implemented"
+        }.toNotAbort
+    }
+}
+```
+Which might produce output like
+```none
+TAP version 13
+1..3
+ok 1 Test Feature 1
+not ok 2 Test Feature 2
+# expect(received).toEqual(expected)
+#
+# Expected: true
+# Received: false
+#
+#   12 |
+#   13 |     do.test("Test Feature 2") {
+# > 14 |         Expect.value(1 == 2).toBe(true)
+#   15 |     }
+#   16 |
+#
+# at test(_,_) block argument (./example.spec.wren line 14)#
+# ...
+ok 3 Do not test me # SKIP
+```
 
 ### Contributions
 
