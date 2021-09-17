@@ -38,6 +38,13 @@ class DeepEqual {
 }
 
 class Expect {
+    static classInitialize() {
+        __withColors = true
+    }
+    static withoutColors {
+        __withColors = false
+    }
+
     construct new(value) { _value = value }
     static that(v) { Expect.new(v) }
     static value(v) { Expect.new(v) }
@@ -143,12 +150,23 @@ class Expect {
         }
     }
     buildErrorMessage_(expected, received, methodName) {
-        var fade = "%(Color.BLACK + Color.BOLD)"
-        var err="%(fade)expect(%(Color.RESET + Color.RED)received%(fade)).%(methodName)(%(Color.RESET + Color.GREEN)expected%(fade)) // deep equality\n\n"
-        err = err + "%(Color.WHITE + Color.BOLD)Expected:%(Color.RESET) "
-        err = err + Color.GREEN + printValue_(expected) + Color.RESET + "\n"
-        err = err + "%(Color.WHITE + Color.BOLD)Received:%(Color.RESET) "
-        err = err + Color.RED + printValue_(received) + Color.RESET
+        var bold = Color.BOLD
+        var reset = Color.RESET
+        var fade = Color.BLACK + bold
+        var red = Color.RED
+        var green = Color.GREEN
+        var white = Color.WHITE + bold
+        if (!__withColors) {
+            reset = fade = red = green = white = ""
+        }
+
+        var err="%(fade)expect(%(reset)%(red)received%(fade)).%(methodName)(%(reset)%(green)expected%(fade))\n\n"
+        err = err + "%(white)Expected:%(reset) "
+        err = err + green + printValue_(expected) + reset + "\n"
+        err = err + "%(white)Received:%(reset) "
+        err = err + red + printValue_(received) + reset
         return err
     }
 }
+
+Expect.classInitialize()
