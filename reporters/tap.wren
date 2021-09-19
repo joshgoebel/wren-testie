@@ -1,6 +1,6 @@
-import "./capabilities" for Capabilities
-import "./stacktrace_report" for StackTraceReport
-import "./expect" for Expect
+import "../src/capabilities" for Capabilities
+import "../src/stacktrace_report" for StackTraceReport
+import "../src/expect" for Expect
 
 StackTraceReport.withoutColors
 Expect.withoutColors

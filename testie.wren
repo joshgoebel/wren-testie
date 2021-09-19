@@ -2,7 +2,7 @@ import "random" for Random
 import "io" for Stdout
 import "os" for Process
 import "./vendor/colors" for Colors as Color
-import "./src/cute_reporter" for CuteReporter
+import "./reporters/cute" for CuteReporter
 import "./src/expect" for Expect
 import "./src/capabilities" for Capabilities
 var RND = Random.new()

@@ -1,5 +1,5 @@
 import "../../testie" for Testie, Expect
-import "../../src/tap_reporter" for TapReporter
+import "../../reporters/tap" for TapReporter
 
 Testie.test("Test successfully", {"reporter": TapReporter}) { |do, skip|
   do.test("test 1") {

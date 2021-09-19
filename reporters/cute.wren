@@ -1,7 +1,8 @@
 import "random" for Random
 import "../vendor/colors" for Colors as Color
-import "./stacktrace_report" for StackTraceReport
-import "./capabilities" for Capabilities
+import "../src/stacktrace_report" for StackTraceReport
+import "../src/capabilities" for Capabilities
+
 var RND = Random.new()
 var SAD_EMOJI = ["😡","👺","👿","🙀","💩","😰","😤","😬"]
 

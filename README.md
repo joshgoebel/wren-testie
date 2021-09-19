@@ -96,7 +96,7 @@ suite.run()
 
 ```js
 import "wren-testie/testie" for Testie
-import "wren-testie/reporters" for TapReporter
+import "wren-testie/reporters/tap" for TapReporter
 
 Testie.test("Features Under Test",
     {
