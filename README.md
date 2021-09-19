@@ -61,7 +61,8 @@ I'm open to more styles if they can be accomplished with simple aliases.  Open a
 ### Example
 
 ```js
-import "./testie/testie" for Testie, Assert
+import "wren-testie/testie" for Testie
+import "wren-assert/Assert" for Assert
 
 // defining custom reporters is super simple
 class DotReporter {
@@ -94,10 +95,10 @@ suite.run()
 #### Using the options map on the static `test` method:
 
 ```js
-import "./testie" for Testie
-import "./src/tap_reporter" for TapReporter
+import "wren-testie/testie" for Testie
+import "wren-testie/reporters" for TapReporter
 
-Testie.test("Features Under Test", 
+Testie.test("Features Under Test",
     {
         "reporter": TapReporter,
         "abortAfterFailures": false,
@@ -113,7 +114,7 @@ Testie.test("Features Under Test",
     }
 
     skip.test("Do not test me") {
-        Expect.that { 
+        Expect.that {
             return "not yet implemented"
         }.toNotAbort
     }
