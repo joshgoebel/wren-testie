@@ -5,10 +5,14 @@ Testie.test("Test failures", {
     "reporter": TapReporter,
     "abortAfterFailures": false,
 }) { |do, skip|
-  do.test("test 1") {
-    Expect.that(1 + 1).toEqual(2)
+  do.describe("Success section") {
+    do.test("test 1") {
+      Expect.that(1 + 1).toEqual(2)
+    }
   }
-  do.test("test 2") {
-    Expect.that(2 + 2).toEqual(42)
+  do.describe("Failure section") {
+    do.test("test 2") {
+      Expect.that(2 + 2).toEqual(42)
+    }
   }
 }

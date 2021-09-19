@@ -69,7 +69,10 @@ class Testie {
     run() {
         if (!(_tests[0] is String)) { _name = _name + "\n" }
         var r = reporter.new(_name)
-        r.start()
+
+        // sections and tests are co-mingled
+        var numberOfTests = _tests.where {|t| t is Test}.count
+        r.start(numberOfTests)
 
         var i = 0
         var first_error

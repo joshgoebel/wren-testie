@@ -11,35 +11,31 @@ class TapReporter {
 
     construct new(name) {
         _name = name
-        _fail = _skip = _success = _number = 0
-        _plan = false
+        _fail = _skip = _success = 0
+        _showNumTestsWhenDone = true
         _section = ""
     }
-    start() {
+    testNumber { _fail + _skip + _success }
+
+    start(numTestsToRun) {
         System.print("TAP version %(this.type.tapVersion)")
-    }
-    start(num_tests) {
-        start()
-        _plan = true
-        System.print("1..%(num_tests)")
+        System.print("1..%(numTestsToRun)")
+        _showNumTestsWhenDone = false
     }
     section(name) {
         _section = "%(name): "
     }
     skip(name) {
         _skip = _skip + 1
-        _number = _number + 1
-        System.print("ok %(_number) %(_section)%(name) # SKIP")
+        System.print("ok %(testNumber) %(_section)%(name) # SKIP")
     }
     success(name) {
         _success = _success + 1
-        _number = _number + 1
-        System.print("ok %(_number) %(_section)%(name)")
+        System.print("ok %(testNumber) %(_section)%(name)")
     }
     fail(name, fiber) {
         _fail = _fail + 1
-        _number = _number + 1
-        System.print("not ok %(_number) %(_section)%(name)")
+        System.print("not ok %(testNumber) %(_section)%(name)")
         for (line in fiber.error.toString.split("\n")) {
             System.print(line.isEmpty ? "#" : "# %(line)")
         }
@@ -55,6 +51,6 @@ class TapReporter {
         System.print("Bail out! $(message)")
     }
     done() {
-        if (!_plan) { System.print("1..%(_number)") }
+        if (_showNumTestsWhenDone) { System.print("1..%(testNumber)") }
     }
 }

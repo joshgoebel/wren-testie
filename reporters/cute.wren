@@ -14,7 +14,7 @@ class CuteReporter {
         _fails = []
         _section = name.trim()
     }
-    start() { System.print(_name) }
+    start(numTestsToRun) { System.print(_name) }
     skip(name) {
         _skip = _skip + 1
         System.print("  🌀 [skip] %(name)")

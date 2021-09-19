@@ -19,9 +19,9 @@ Testie.test("TAP reporter") { |do, skip|
     var actual = TestRunner.run("./tests/tap_data/success.spec.wren")
     var expected = """
 TAP version 13
+1..2
 ok 1 test 1
 ok 2 test 2
-1..2
 """
     Expect.value(actual.trim()).toEqual(expected)
   }
@@ -30,9 +30,9 @@ ok 2 test 2
     var actual = TestRunner.run("./tests/tap_data/skip.spec.wren")
     var expected = """
 TAP version 13
+1..2
 ok 1 test 1
 ok 2 test 2 # SKIP
-1..2
 """
     Expect.value(actual.trim()).toEqual(expected)
   }
@@ -41,22 +41,21 @@ ok 2 test 2 # SKIP
     var actual = TestRunner.run("./tests/tap_data/fail.spec.wren")
     var expected = """
 TAP version 13
-ok 1 test 1
-not ok 2 test 2
+1..2
+ok 1 Success section: test 1
+not ok 2 Failure section: test 2
 # expect(received).toEqual(expected)
 #
 # Expected: 42
 # Received: 4
 #
-#   10 |   }
-#   11 |   do.test("test 2") {
-# > 12 |     Expect.that(2 + 2).toEqual(42)
-#   13 |   }
-#   14 | }
+#   13 |   do.describe("Failure section") {
+#   14 |     do.test("test 2") {
+# > 15 |       Expect.that(2 + 2).toEqual(42)
+#   16 |     }
+#   17 |   }
 """
     // the failure diagnostics also include a stack trace
     Expect.value(actual.startsWith(expected)).toBe(true)
-    // TAP output ends with the number of tests run
-    Expect.value(actual.trim().split("\n")[-1]).toBe("1..2")
   }
 }
