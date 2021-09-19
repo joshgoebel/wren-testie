@@ -52,7 +52,7 @@ class StackTraceReport {
     return codeSummary() + "\n" + "\n" + traceSummary()
   }
   print() {
-    System.print(toString)
+    System.print(this)
   }
 
   highlight(line) {

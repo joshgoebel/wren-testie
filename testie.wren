@@ -20,7 +20,7 @@ class Test {
 }
 
 class Testie {
-    construct new(name, fn) {
+    initialize_(name, fn) {
         _tests = []
         _skips = []
         _name = name
@@ -29,23 +29,28 @@ class Testie {
         _afterEach = _beforeEach = Fn.new {}
         fn.call(this, Skipper.new(this))
     }
-    static test(name, fn) { Testie.new(name,fn).run() }
-    static test(name, options, fn) {
-        var testie = Testie.new(name,fn)
+
+    construct new(name, fn) {
+        initialize_(name, fn)
+    }
+    construct new(name, options, fn) {
+        initialize_(name, fn)
         for (option in options) {
             if (option.key == "reporter") {
-                testie.reporter = option.value
+                _reporter = option.value
             }
             if (option.key == "abortAfterFailures") {
-                testie.abortAfterFailures_ = option.value
+                _abortAfterFailures = option.value
             }
         }
-        testie.run()
     }
+
+    static test(name, fn) { Testie.new(name,fn).run() }
+    static test(name, options, fn) { Testie.new(name, options, fn).run() }
+
     expect(v) { Expect.that(v) }
     afterEach(fn) { _afterEach = fn }
     beforeEach(fn) { _beforeEach = fn }
-    abortAfterFailures_=(v){ _abortAfterFailures = v }
     reporter=(v){ _reporter = v }
     reporter { _reporter || CuteReporter }
 
@@ -104,8 +109,12 @@ class Testie {
             Stdout.flush()
             Fiber.new(test.fn).call()
         }
-        if (_fails > 0 && _abortAfterFailures) {
-            Fiber.abort("Failing tests.")
+        if (_fails > 0) {
+            if (_abortAfterFailures) {
+                Fiber.abort("Failing tests.")
+            } else {
+                Process.exit(1)
+            }
         }
     }
 }
