@@ -36,6 +36,5 @@ for (module in modulePaths) {
     }
 }
 
-System.print()
-System.print("OK:\t%(oks.join("\n\t"))")
-System.print("FAIL:\t%(fails.join("\n\t"))")
+if (!oks.isEmpty) System.print("OK:\t%(oks.join("\n\t"))")
+if (!fails.isEmpty) System.print("FAIL:\t%(fails.join("\n\t"))")
