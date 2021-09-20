@@ -25,7 +25,6 @@ class Testie {
         _skips = []
         _name = name
         _fails = 0
-        _abortAfterFailures = true
         _afterEach = _beforeEach = Fn.new {}
         fn.call(this, Skipper.new(this))
     }
@@ -38,9 +37,6 @@ class Testie {
         for (option in options) {
             if (option.key == "reporter") {
                 _reporter = option.value
-            }
-            if (option.key == "abortAfterFailures") {
-                _abortAfterFailures = option.value
             }
         }
     }
@@ -112,13 +108,7 @@ class Testie {
             Stdout.flush()
             Fiber.new(test.fn).call()
         }
-        if (_fails > 0) {
-            if (_abortAfterFailures) {
-                Fiber.abort("Failing tests.")
-            } else {
-                Process.exit(1)
-            }
-        }
+        if (_fails > 0) Process.exit(1)
     }
 }
 

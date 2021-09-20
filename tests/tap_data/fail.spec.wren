@@ -1,10 +1,7 @@
 import "../../testie" for Testie, Expect
 import "../../reporters/tap" for TapReporter
 
-Testie.test("Test failures", {
-    "reporter": TapReporter,
-    "abortAfterFailures": false,
-}) { |do, skip|
+Testie.test("Test failures", {"reporter": TapReporter}) { |do, skip|
   do.describe("Success section") {
     do.test("test 1") {
       Expect.that(1 + 1).toEqual(2)

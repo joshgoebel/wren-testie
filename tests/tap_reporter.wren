@@ -49,11 +49,11 @@ not ok 2 Failure section: test 2
 # Expected: 42
 # Received: 4
 #
-#   13 |   do.describe("Failure section") {
-#   14 |     do.test("test 2") {
-# > 15 |       Expect.that(2 + 2).toEqual(42)
-#   16 |     }
-#   17 |   }
+#   10 |   do.describe("Failure section") {
+#   11 |     do.test("test 2") {
+# > 12 |       Expect.that(2 + 2).toEqual(42)
+#   13 |     }
+#   14 |   }
 """
     // the failure diagnostics also include a stack trace
     Expect.value(actual.startsWith(expected)).toBe(true)

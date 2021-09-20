@@ -98,13 +98,7 @@ suite.run()
 import "wren-testie/testie" for Testie
 import "wren-testie/reporters/tap" for TapReporter
 
-Testie.test("Features Under Test",
-    {
-        "reporter": TapReporter,
-        "abortAfterFailures": false,
-    }
-) { |do, skip|
-
+Testie.test("Features Under Test", {"reporter": TapReporter}) { |do, skip|
     do.test("Test Feature 1") {
         Expect.value(5.pow(3)).toEqual(125);
     }
