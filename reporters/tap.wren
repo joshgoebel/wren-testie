@@ -33,18 +33,18 @@ class TapReporter {
         _success = _success + 1
         System.print("ok %(testNumber) %(_section)%(name)")
     }
+    printDiagnostic_(text) {
+        for (line in text.split("\n")) {
+            System.print("# %(line)".trimEnd())
+        }
+    }
     fail(name, fiber) {
         _fail = _fail + 1
         System.print("not ok %(testNumber) %(_section)%(name)")
-        for (line in fiber.error.toString.split("\n")) {
-            System.print(line.isEmpty ? "#" : "# %(line)")
-        }
+        printDiagnostic_(fiber.error.toString)
         if (Capabilities.hasMirror) {
-            System.print("#")
-            var st = StackTraceReport.new(fiber)
-            for (line in st.toString.split("\n")) {
-                System.print(line.isEmpty ? "#" : "# %(line)")
-            }
+            printDiagnostic_("")
+            printDiagnostic_(StackTraceReport.new(fiber).toString)
         }
     }
     bail(message) {
