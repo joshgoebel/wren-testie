@@ -2,7 +2,7 @@ import "random" for Random
 import "io" for Stdout
 import "os" for Process
 import "./vendor/colors" for Colors as Color
-import "./src/reporter" for CuteReporter
+import "./reporters/cute" for CuteReporter
 import "./src/expect" for Expect
 import "./src/capabilities" for Capabilities
 var RND = Random.new()
@@ -20,7 +20,7 @@ class Test {
 }
 
 class Testie {
-    construct new(name, fn) {
+    initialize_(name, fn) {
         _tests = []
         _skips = []
         _name = name
@@ -28,7 +28,22 @@ class Testie {
         _afterEach = _beforeEach = Fn.new {}
         fn.call(this, Skipper.new(this))
     }
+
+    construct new(name, fn) {
+        initialize_(name, fn)
+    }
+    construct new(name, options, fn) {
+        initialize_(name, fn)
+        for (option in options) {
+            if (option.key == "reporter") {
+                _reporter = option.value
+            }
+        }
+    }
+
     static test(name, fn) { Testie.new(name,fn).run() }
+    static test(name, options, fn) { Testie.new(name, options, fn).run() }
+
     expect(v) { Expect.that(v) }
     afterEach(fn) { _afterEach = fn }
     beforeEach(fn) { _beforeEach = fn }
@@ -50,7 +65,10 @@ class Testie {
     run() {
         if (!(_tests[0] is String)) { _name = _name + "\n" }
         var r = reporter.new(_name)
-        r.start()
+
+        // sections and tests are co-mingled
+        var numberOfTests = _tests.where {|t| t is Test}.count
+        r.start(numberOfTests)
 
         var i = 0
         var first_error
@@ -90,11 +108,9 @@ class Testie {
             Stdout.flush()
             Fiber.new(test.fn).call()
         }
-        if (_fails > 0) Fiber.abort("Failing tests.")
+        if (_fails > 0) Process.exit(1)
     }
 }
-
-
 
 
 class Skipper {
@@ -104,4 +120,3 @@ class Skipper {
     test(a,b) { _that.skip(a,b) }
     should(a,b) { _that.skip(a,b) }
 }
-

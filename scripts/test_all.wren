@@ -5,8 +5,7 @@ import "os" for Process
 import "meta" for Meta
 import "essentials" for Strings
 
-import "../testie" for Testie
-import "../src/expect" for Expect
+import "../testie" for Testie, Expect
 
 // fetch all wren files
 var testDir = "./tests/"
