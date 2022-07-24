@@ -1,16 +1,14 @@
 import "../vendor/colors" for Colors as Color
-import "io" for File
 import "./capabilities" for Capabilities
-var Mirror = null
+var Mirror = Capabilities.tryImportMirror
+var Repl = Capabilities.tryImportRepl
 var Lexer = null
 var Token = null
-if (Capabilities.hasMirror) {
-  import "mirror" for Mirror as M
-  Mirror = M
-  import "repl" for Lexer as L, Token as T
-  Lexer = L
-  Token = T
+if (Repl) {
+  Lexer = Repl[0]
+  Token = Repl[1]
 }
+var File = Capabilities.tryImportFile
 
 class Highlighter {
   construct new(code) {
@@ -49,14 +47,23 @@ class StackTraceReport {
   }
 
   toString {
-    return codeSummary() + "\n" + "\n" + traceSummary()
+    if (File) {
+      return codeSummary() + "\n" + "\n" + traceSummary()
+    } else {
+      return traceSummary()
+    }
   }
+
   print() {
     System.print(this)
   }
 
   highlight(line) {
-    return Highlighter.new(line).toString
+    if (Lexer) {
+      return Highlighter.new(line).toString
+    } else {
+      return line
+    }
   }
 
   codeSummary() {

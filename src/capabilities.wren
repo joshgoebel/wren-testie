@@ -1,9 +1,27 @@
 class Capabilities {
-  static hasMirror {
-    var f = Fiber.new {
-      import "mirror"
+  static tryImport_ (fn) {
+    var f = Fiber.new(fn) 
+    var module = f.try()
+    return f.error ? null : module
+  }
+  static hasMirror { tryImportMirror }
+
+  static tryImportMirror {
+    return tryImport_ {
+      import "mirror" for Mirror
+      return Mirror
     }
-    f.try()
-    return f.error ? false : true
+  }
+  static tryImportFile { 
+    return tryImport_ {
+      import "io" for File
+      return File
+    }
+  }
+  static tryImportRepl {
+    return tryImport_ {
+      import "repl" for Lexer, Token
+      return [Lexer, Token]
+    }
   }
 }
