@@ -4,7 +4,7 @@ import "os" for Process
 class Package is WrenPackage {
   construct new() {}
   name { "wren-testie" }
-  version { "0.3.1" }
+  version { "0.3.2" }
   dependencies {
     return []
   }

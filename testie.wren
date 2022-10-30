@@ -4,7 +4,6 @@ import "os" for Process
 import "./vendor/colors" for Colors as Color
 import "./reporters/cute" for CuteReporter
 import "./src/expect" for Expect
-import "./src/capabilities" for Capabilities
 var RND = Random.new()
 
 class Test {
@@ -71,7 +70,6 @@ class Testie {
         r.start(numberOfTests)
 
         var i = 0
-        var first_error
         for (test in _tests) {
             if (test is String) {
                 r.section(test)
@@ -88,7 +86,6 @@ class Testie {
             var fiber = Fiber.new(test.fn)
             var error = fiber.try()
             if (error) {
-                if (first_error == null) first_error = i
                 _fails = _fails + 1
                 r.fail(test.name, fiber)
             } else {
@@ -100,14 +97,6 @@ class Testie {
         r.done()
         Stdout.flush()
 
-        if (first_error && !Capabilities.hasMirror) {
-            var test = _tests[first_error]
-            System.print(Color.BLACK + Color.BOLD + "--- TEST " + "-" * 66 + Color.RESET)
-            System.print("%(test.name)\n")
-            System.print(Color.BLACK + Color.BOLD + "--- STACKTRACE " + "-" * 60 + Color.RESET)
-            Stdout.flush()
-            Fiber.new(test.fn).call()
-        }
         if (_fails > 0) Process.exit(1)
     }
 }

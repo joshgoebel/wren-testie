@@ -1,16 +1,7 @@
 import "../vendor/colors" for Colors as Color
 import "io" for File
-import "./capabilities" for Capabilities
-var Mirror = null
-var Lexer = null
-var Token = null
-if (Capabilities.hasMirror) {
-  import "mirror" for Mirror as M
-  Mirror = M
-  import "repl" for Lexer as L, Token as T
-  Lexer = L
-  Token = T
-}
+import "mirror" for Mirror
+import "repl" for Lexer, Token
 
 class Highlighter {
   construct new(code) {

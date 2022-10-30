@@ -1,4 +1,3 @@
-import "../src/capabilities" for Capabilities
 import "../src/stacktrace_report" for StackTraceReport
 import "../src/expect" for Expect
 
@@ -42,10 +41,8 @@ class TapReporter {
         _fail = _fail + 1
         System.print("not ok %(testNumber) %(_section)%(name)")
         printDiagnostic_(fiber.error.toString)
-        if (Capabilities.hasMirror) {
-            printDiagnostic_("")
-            printDiagnostic_(StackTraceReport.new(fiber).toString)
-        }
+        printDiagnostic_("")
+        printDiagnostic_(StackTraceReport.new(fiber).toString)
     }
     bail(message) {
         System.print("Bail out! $(message)")
